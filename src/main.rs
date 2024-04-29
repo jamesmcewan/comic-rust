@@ -1,14 +1,14 @@
 use reqwest::header::USER_AGENT;
 mod comicstructs;
+mod getkey;
 mod geturl;
 use crate::comicstructs::ComicVineResponse;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
 
-    let _ = dotenv_vault::dotenv();
     let publisher_id = &args[1].to_string();
-    let api_key = std::env::var("COMICVINE_KEY").expect("COMICVINE_KEY must be set");
+    let api_key = crate::getkey::get_key();
     let full_url = crate::geturl::get_url(api_key, publisher_id.to_string());
 
     println!("looking for: {}\n", publisher_id);
