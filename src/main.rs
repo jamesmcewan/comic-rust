@@ -3,7 +3,6 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 struct ComicVineResponse {
-    number_of_total_results: i32,
     results: ComicResult,
 }
 
@@ -26,11 +25,11 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
     let url = "https://comicvine.gamespot.com/api/publisher/";
     let publisher_id = &args[1].to_string();
     let api_key = std::env::var("COMICVINE_KEY").expect("COMICVINE_KEY must be set");
-    let query = "&format=json&sort=name:asc";
-    let full_url = format!("{}{}/?api_key={}{}", url, publisher_id, api_key, query);
+    let params = "&format=json&sort=name:asc";
+    let full_url = format!("{}{}/?api_key={}{}", url, publisher_id, api_key, params);
 
-    println!("looking for: {}", publisher_id);
-    println!("full url: {}", full_url);
+    println!("looking for: {}\n", publisher_id);
+
     let client = reqwest::blocking::Client::new();
     let response = client
         .get(full_url)
@@ -44,11 +43,14 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         let json_value = response.json::<ComicVineResponse>();
         match json_value {
             Ok(value) => {
-                println!("{:?}", value.number_of_total_results);
-                println!("{:?}", value.results.aliases);
+                print!("Result found\n\n");
+                print!("--------------------------------\n\n");
+                println!("Name: {:?}\n", value.results.aliases);
+                print!("--------------------------------\n\n");
                 for volume in &value.results.volumes {
-                    println!("{:?}", volume.name);
-                    println!("{:?}", volume.site_detail_url);
+                    println!("{:?}\n", volume.name);
+                    println!("{:?}\n", volume.site_detail_url);
+                    print!("--------------------------------\n\n");
                 }
             }
             Err(e) => {
