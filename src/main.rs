@@ -3,22 +3,20 @@ use serde::Deserialize;
 
 #[derive(Debug, Deserialize)]
 struct ComicVineResponse {
-    status: String,
-    error: String,
-    limit: i32,
-    offset: i32,
-    number_of_page_results: i32,
     number_of_total_results: i32,
-    results: Vec<Publisher>,
+    results: ComicResult,
 }
 
 #[derive(Debug, Deserialize)]
-struct Publisher {
-    id: i32,
-    api_detail_url: String,
+struct ComicResult {
+    aliases: String,
+    volumes: Vec<ComicVolume>,
+}
+
+#[derive(Debug, Deserialize)]
+struct ComicVolume {
     name: String,
     site_detail_url: String,
-    count_of_issues: i32,
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
@@ -39,12 +37,20 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
         .send()?;
 
     if response.status().is_success() {
-        println!("Request successful");
-        println!("Headers:\n{:#?}", response.headers());
-        println!("Body:\n{}", response.text()?);
-        // Deserialize the JSON response into a Post struct
-        // let comic: ComicVineResponse = response.json()?;
-        // println!("{:?}", comic);
+        let json_value = response.json::<ComicVineResponse>();
+        match json_value {
+            Ok(value) => {
+                println!("{:?}", value.number_of_total_results);
+                println!("{:?}", value.results.aliases);
+                for volume in value.results.volumes {
+                    println!("{:?}", volume.name);
+                    println!("{:?}", volume.site_detail_url);
+                }
+            }
+            Err(e) => {
+                println!("Error: {:?}", e);
+            }
+        }
     } else {
         println!("Request failed with status code: {}", response.status());
     }
