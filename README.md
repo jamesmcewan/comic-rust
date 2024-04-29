@@ -7,7 +7,7 @@ Requires a comicvine api key. You can get one by creating an account at https://
 
 ## Usage
 
-Get the puvlisher id from the comicvine website. For example, the publisher id for Titan Books is `4010-4212`.
+Get the publisher id from the comicvine website. For example, the publisher id for Titan Books is `4010-4212`.
 
 ```bash
 #Remember  the quotes
