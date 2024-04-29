@@ -42,7 +42,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
             Ok(value) => {
                 println!("{:?}", value.number_of_total_results);
                 println!("{:?}", value.results.aliases);
-                for volume in value.results.volumes {
+                for volume in &value.results.volumes {
                     println!("{:?}", volume.name);
                     println!("{:?}", volume.site_detail_url);
                 }
