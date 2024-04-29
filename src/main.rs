@@ -1,32 +1,16 @@
 use reqwest::header::USER_AGENT;
-use serde::Deserialize;
-
-#[derive(Debug, Deserialize)]
-struct ComicVineResponse {
-    results: ComicResult,
-}
-
-#[derive(Debug, Deserialize)]
-struct ComicResult {
-    aliases: String,
-    volumes: Vec<ComicVolume>,
-}
-
-#[derive(Debug, Deserialize)]
-struct ComicVolume {
-    name: String,
-    site_detail_url: String,
-}
+mod comicstructs;
+use crate::get_url::get_url;
+mod get_url;
+use crate::comicstructs::ComicVineResponse;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
 
     let _ = dotenv_vault::dotenv();
-    let url = "https://comicvine.gamespot.com/api/publisher/";
     let publisher_id = &args[1].to_string();
     let api_key = std::env::var("COMICVINE_KEY").expect("COMICVINE_KEY must be set");
-    let params = "&format=json&sort=name:asc";
-    let full_url = format!("{}{}/?api_key={}{}", url, publisher_id, api_key, params);
+    let full_url = get_url(api_key, publisher_id.to_string());
 
     println!("looking for: {}\n", publisher_id);
 
