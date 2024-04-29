@@ -20,13 +20,17 @@ struct ComicVolume {
 }
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let args: Vec<String> = std::env::args().collect();
+
     let _ = dotenv_vault::dotenv();
     let url = "https://comicvine.gamespot.com/api/publisher/";
-    let publisher_id = "4010-4212";
+    let publisher_id = &args[1].to_string();
     let api_key = std::env::var("COMICVINE_KEY").expect("COMICVINE_KEY must be set");
     let query = "&format=json&sort=name:asc";
     let full_url = format!("{}{}/?api_key={}{}", url, publisher_id, api_key, query);
 
+    println!("looking for: {}", publisher_id);
+    println!("full url: {}", full_url);
     let client = reqwest::blocking::Client::new();
     let response = client
         .get(full_url)
