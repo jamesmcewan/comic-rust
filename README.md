@@ -15,5 +15,5 @@ cargo run -- "4010-4212"
 
 
 # To save the output to a file
-cargo run -- "4010-4212" > boom_studios.txt
+cargo run -- "4010-4212" > titan-books.txt
 ```
